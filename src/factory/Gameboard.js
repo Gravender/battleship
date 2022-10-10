@@ -13,17 +13,29 @@ const Gameboard = () => {
     }
   };
   const generateShips = () => {
-    ships[0] = new Ship(2);
-    ships[1] = new Ship(3);
-    ships[2] = new Ship(3);
-    ships[3] = new Ship(4);
-    ships[4] = new Ship(5);
+    ships[0] = Ship(2);
+    ships[1] = Ship(3);
+    ships[2] = Ship(3);
+    ships[3] = Ship(4);
+    ships[4] = Ship(5);
   };
   generateGrid();
   generateShips();
   const placeShip = (ship, startX, startY, rotation) => {
     let x = startX;
     let y = startY;
+    for (let i = 0; i < ships[ship].length; i += 1) {
+      if (x >= 10 || y >= 10 || grid[x][y] !== 0) {
+        return false;
+      }
+      if (rotation) {
+        x += 1;
+      } else {
+        y += 1;
+      }
+    }
+    x = startX;
+    y = startY;
     for (let i = 0; i < ships[ship].length; i += 1) {
       grid[x][y] = ship + 2;
       if (rotation) {
@@ -32,6 +44,7 @@ const Gameboard = () => {
         y += 1;
       }
     }
+    return true;
   };
   const receiveAttack = (x, y) => {
     if (grid[x][y] > 0) {
@@ -54,7 +67,7 @@ const Gameboard = () => {
     });
     return ships.length === numSunk;
   };
-  return { placeShip, receiveAttack, shipsSunk, grid };
+  return { placeShip, receiveAttack, shipsSunk, grid, ships };
 };
 
 export default Gameboard;

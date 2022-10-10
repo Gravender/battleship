@@ -1,0 +1,67 @@
+:root{
+  --ship1-color: #ffb3ba;
+  --ship2-color: #ffdfba;
+  --ship3-color: #ffffba;
+  --ship4-color: #baffc9;
+  --ship5-color: #bae1ff;
+  --grid-size: 20px;
+}
+.gameboard {
+    display: grid;
+    width: 40vw;
+    height: 40vw;
+    margin: auto;
+    margin-top: 20px;
+    grid-template-rows: repeat(var(--grid-rows), auto);
+    grid-template-columns: repeat(var(--grid-cols), auto);
+    border: 2px solid blue;
+    grid-gap: 1px;
+    background-color: black;
+    justify-content: stretch;
+  }
+  .grid-item{
+    height: 100%;
+    width: 100%;
+    background-color: rgba(156, 87, 87, 0.8);
+  }
+  .cellHit{
+    font-size: 3vw;
+    color: #FFF;
+    text-align: center;
+  }
+  .ship{
+    height: 100%;
+    width: 100%;
+    z-index: 1;
+  }
+  .hit{
+    height: 100%;
+    width: 100%;
+    color: red;
+    margin: auto;
+    background-color: #f669676b;
+    z-index: 2;
+  }
+  .miss{
+    height: 100%;
+    width: 100%;
+    position:relative;
+    margin: auto;
+    background-color: rgba(255, 255, 255, 0.747);
+    z-index: 2;
+  }
+  .shipID-1{
+    background-color: var(--ship1-color);
+  }
+  .shipID-2{
+    background-color: var(--ship2-color);
+  }
+  .shipID-3{
+    background-color: var(--ship3-color);
+  }
+  .shipID-4{
+    background-color: var(--ship4-color);
+  }
+  .shipID-5{
+    background-color: var(--ship5-color);
+  }
