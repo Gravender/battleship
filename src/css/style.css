@@ -65,3 +65,6 @@
   .shipID-5{
     background-color: var(--ship5-color);
   }
+  .invisible{
+    background-color: #ffffff00;
+  }
