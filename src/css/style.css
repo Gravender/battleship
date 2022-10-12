@@ -52,14 +52,16 @@ h1 {
 #content {
   display: flex;
   flex-direction: row;
+  align-items: center;
+  align-content: center;
+  justify-content: center;
 }
 .gameboard {
   display: grid;
   width: 310px;
   height: 310px;
-  margin: auto;
+  margin: 10px;
   margin-top: 20px;
-  padding: auto;
   grid-template-rows: repeat(var(--grid-rows), 30px);
   grid-template-columns: repeat(var(--grid-cols), 30px);
   border: 2px solid blue;
@@ -73,7 +75,7 @@ h1 {
   background-color: rgba(156, 87, 87, 0.8);
 }
 .cellHit {
-  font-size: 3vw;
+  font-size: 30px;
   color: #fff;
   text-align: center;
 }
