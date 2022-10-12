@@ -34,18 +34,18 @@ const Game = () => {
     });
   };
   const easyAi = (player, enemy, playID) => {
-    if (isGameOver(player, enemy) == 0) {
+    if (isGameOver(player, enemy) === 0) {
       randomAttack(player, enemy, playID);
       checkShips(enemy, playID);
     }
-    if (isGameOver(player, enemy) != 0) {
+    if (isGameOver(player, enemy) !== 0) {
       displayGameOver(isGameOver(player, enemy).name);
     }
   };
   const playerTurn = (player, enemy, playID, data) => {
-    const { x, y, hit, status } = data;
-    if (isGameOver(player, enemy) == 0) {
-      if (parseInt(hit) === 0) {
+    const { x, y, hit } = data;
+    if (isGameOver(player, enemy) === 0) {
+      if (parseInt(hit, 10) === 0) {
         player.attack(enemy, x, y);
         const attackID = `row-${x}-col-${y}-playID-${playID}`;
         updateGameboard(attackID);
@@ -53,7 +53,7 @@ const Game = () => {
         easyAi(enemy, player, 0);
       }
     }
-    if (isGameOver(player, enemy) != 0) {
+    if (isGameOver(player, enemy) !== 0) {
       displayGameOver(isGameOver(player, enemy).name);
     }
   };
@@ -82,22 +82,11 @@ const Game = () => {
       randomShipPlacment(player, i);
     }
   };
-  const resetGame = () => {
-    resetGameDom();
-  };
-  const startGameButton = () => {
-    const { name1, name2 } = startGameDom();
-    startGame(name1, name2);
-  };
   const startGame = (name1 = "", name2 = "AI") => {
     const player1 = Player();
     const player2 = Player();
     player1.name = name1;
     player2.name = name2;
-    const resetBtn = document.getElementById("resetBtn");
-    const startBtn = document.getElementById("startBtn");
-    resetBtn.addEventListener("click", resetGame);
-    startBtn.addEventListener("click", startGameButton);
     createBoard(0, 1);
     randomShipsPlacments(player1);
     randomShipsPlacments(player2);
@@ -106,12 +95,23 @@ const Game = () => {
     createClickableGameboard(player1, player2, 1, playerTurn);
     return { player1, player2 };
   };
+  const resetGame = () => {
+    resetGameDom();
+  };
+  const startGameButton = () => {
+    const { name1, name2 } = startGameDom();
+    const { player1, player2 } = startGame(name1, name2);
+    // uncomment for testing
+    // fakerGame(player1, player2);
+  };
+  const initGame = () => {
+    const resetBtn = document.getElementById("resetBtn");
+    const startBtn = document.getElementById("startBtn");
+    resetBtn.addEventListener("click", resetGame);
+    startBtn.addEventListener("click", startGameButton);
+  };
 
-  const fakerGame = () => {
-    const game = Game();
-    const { player1, player2 } = game.startGame();
-    player1.name = "Noah";
-    player2.name = "AI";
+  const fakerGame = (player1, player2) => {
     for (let i = 0; i < 120; i += 1) {
       if (i % 3 === 0) {
         easyAi(player1, player2, 1);
@@ -126,7 +126,7 @@ const Game = () => {
     randomShipsPlacments,
     startGame,
     isGameOver,
-    fakerGame,
+    initGame,
   };
 };
 export default Game;

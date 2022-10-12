@@ -17,7 +17,7 @@ h1 {
   font-size: 55px;
 }
 .start {
-  display: none;
+  display: block;
   position: absolute;
   text-align: center;
   font-size: 20px;
@@ -31,7 +31,7 @@ h1 {
   box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.4);
 }
 .playerInput {
-  font-size: 20px;
+  font-size: 15px;
   height: 25px;
   width: 110px;
   padding-left: 5px;

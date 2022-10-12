@@ -3,6 +3,6 @@ import Game from "./factory/game";
 
 function simulateGame() {
   const game = Game();
-  game.fakerGame();
+  game.initGame();
 }
 simulateGame();
