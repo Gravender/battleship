@@ -1,5 +1,4 @@
 import {
-  attackRandomGameBoard,
   createClickableGameboard,
   createGameBoard,
   displayGameOver,
@@ -7,14 +6,65 @@ import {
   removeInvisibility,
   updateGameboard,
 } from "../dom/gameBoardDom";
+import { resetGameDom, startGameDom } from "../dom/gameStartResetDom";
 import Player from "./player";
 
 const Game = () => {
-  const startGame = () => {
-    const player1 = Player();
-    const player2 = Player();
-    return { player1, player2 };
+  const isGameOver = (player1, player2) => {
+    if (player1.gameboard.shipsSunk()) {
+      return player2;
+    }
+    if (player2.gameboard.shipsSunk()) {
+      return player1;
+    }
+    return 0;
   };
+  const randomAttack = (player, enemy, playID) => {
+    const attack = player.randomAttack(enemy);
+    const attackID = `row-${attack.x}-col-${attack.y}-playID-${playID}`;
+    updateGameboard(attackID);
+  };
+  const checkShips = (enemy, enemyID) => {
+    const enemyShips = enemy.gameboard.ships;
+    enemyShips.forEach((ship, i) => {
+      if (ship.isSunk()) {
+        removeInvisibility(enemyID, i + 1);
+        removeInvisibility(enemyID, 0);
+      }
+    });
+  };
+  const easyAi = (player, enemy, playID) => {
+    if (isGameOver(player, enemy) == 0) {
+      randomAttack(player, enemy, playID);
+      checkShips(enemy, playID);
+    }
+    if (isGameOver(player, enemy) != 0) {
+      displayGameOver(isGameOver(player, enemy).name);
+    }
+  };
+  const playerTurn = (player, enemy, playID, data) => {
+    const { x, y, hit, status } = data;
+    if (isGameOver(player, enemy) == 0) {
+      if (parseInt(hit) === 0) {
+        player.attack(enemy, x, y);
+        const attackID = `row-${x}-col-${y}-playID-${playID}`;
+        updateGameboard(attackID);
+        checkShips(enemy, 1);
+        easyAi(enemy, player, 0);
+      }
+    }
+    if (isGameOver(player, enemy) != 0) {
+      displayGameOver(isGameOver(player, enemy).name);
+    }
+  };
+  const createBoard = (play1ID, play2ID) => {
+    const content = document.querySelector("#content");
+    const gameboard1 = createGameBoard(10, play1ID);
+    const gameboard2 = createGameBoard(10, play2ID);
+    content.appendChild(gameboard1);
+    content.appendChild(gameboard2);
+  };
+
   const placeShip = (player, shipID, x, y, direction) => {
     return player.gameboard.placeShip(shipID, x, y, direction);
   };
@@ -32,74 +82,43 @@ const Game = () => {
       randomShipPlacment(player, i);
     }
   };
-  const isGameOver = (player1, player2) => {
-    if (player1.gameboard.shipsSunk()) {
-      return 1;
-    }
-    if (player2.gameboard.shipsSunk()) {
-      return -1;
-    }
-    return 0;
+  const resetGame = () => {
+    resetGameDom();
   };
-  const checkShips = (enemy, enemyID) => {
-    const enemyShips = enemy.gameboard.ships;
-    enemyShips.forEach((ship, i) => {
-      if (ship.isSunk()) {
-        removeInvisibility(enemyID, i + 1);
-        removeInvisibility(enemyID, 0);
-      }
-    });
+  const startGameButton = () => {
+    const { name1, name2 } = startGameDom();
+    startGame(name1, name2);
   };
-  const randomAttack = (player, enemy, playID) => {
-    const attack = player.randomAttack(enemy);
-    const attackID = `row-${attack.x}-col-${attack.y}-playID-${playID}`;
-    updateGameboard(attackID);
+  const startGame = (name1 = "", name2 = "AI") => {
+    const player1 = Player();
+    const player2 = Player();
+    player1.name = name1;
+    player2.name = name2;
+    const resetBtn = document.getElementById("resetBtn");
+    const startBtn = document.getElementById("startBtn");
+    resetBtn.addEventListener("click", resetGame);
+    startBtn.addEventListener("click", startGameButton);
+    createBoard(0, 1);
+    randomShipsPlacments(player1);
+    randomShipsPlacments(player2);
+    populateGame(player1.gameboard, 0, true);
+    populateGame(player2.gameboard, 1, false);
+    createClickableGameboard(player1, player2, 1, playerTurn);
+    return { player1, player2 };
   };
-  const easyAi = (player, enemy, playID) => {
-    if (isGameOver(player, enemy) == 0) {
-      randomAttack(player, enemy, playID);
-      checkShips(enemy, playID);
-    } else {
-      displayGameOver(isGameOver(enemy, player));
-    }
-  };
-  const playerTurn = (player, enemy, playID, data) => {
-    const { x, y, hit, status } = data;
-    if (isGameOver(player, enemy) == 0) {
-      if (parseInt(hit) === 0) {
-        player.attack(enemy, x, y);
-        const attackID = `row-${x}-col-${y}-playID-${playID}`;
-        updateGameboard(attackID);
-        checkShips(enemy, 1);
-        easyAi(enemy, player, 0);
-      }
-    } else {
-      displayGameOver(isGameOver(player, enemy));
-    }
-  };
+
   const fakerGame = () => {
     const game = Game();
     const { player1, player2 } = game.startGame();
-
-    const content = document.querySelector("#content");
-    const gameboard1 = createGameBoard(10, 0);
-    const gameboard2 = createGameBoard(10, 1);
-    content.appendChild(gameboard1);
-    content.appendChild(gameboard2);
-
-    game.randomShipsPlacments(player1);
-    game.randomShipsPlacments(player2);
-
-    populateGame(player1.gameboard, 0, true);
-    populateGame(player2.gameboard, 1, false);
-    for (let i = 0; i < 80; i += 1) {
-      if (i % 2 === 0) {
+    player1.name = "Noah";
+    player2.name = "AI";
+    for (let i = 0; i < 120; i += 1) {
+      if (i % 3 === 0) {
         easyAi(player1, player2, 1);
       } else {
         easyAi(player2, player1, 0);
       }
     }
-    createClickableGameboard(player1, player2, 1, playerTurn);
   };
   return {
     placeShip,

@@ -56,7 +56,10 @@ function updateGameboard(id) {
   }
 }
 function displayGameOver(winner) {
-  return console.log(winner);
+  const gameOver = document.getElementById("gameOver");
+  const displayWinner = document.getElementById("displayWinner");
+  gameOver.style.display = "block";
+  displayWinner.innerText = `${winner} Won`;
 }
 function removeInvisibility(playId, shipID) {
   const gameboard = document.getElementById(`gameboard-playID-${playId}`);
